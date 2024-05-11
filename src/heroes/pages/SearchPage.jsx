@@ -1,5 +1,4 @@
 import {useLocation, useNavigate} from 'react-router-dom';
-import queryString from 'query-string';
 
 import {useForm} from '../../hooks/useForm';
 import {HeroCard} from '../components';
@@ -10,7 +9,8 @@ export const SearchPage = () => {
     const location = useLocation();
 
     // Take only 'q' query params from url, empty by default
-    const {q = ''} = queryString.parse(location.search);
+    const query = new URLSearchParams(location.search);
+    const q = query.get('q') || '';
     const heroes = getHeroesByName(q);
 
     const showSearch = q.length === 0;
@@ -26,9 +26,6 @@ export const SearchPage = () => {
 
         // Navigate to the same page but adding a new query param
         navigate(`?q=${searchText}`);
-
-        console.log({searchText});
-
     };
 
 
@@ -41,7 +38,7 @@ export const SearchPage = () => {
                 <div className="col-5">
                     <h4>Searching</h4>
                     <hr/>
-                    <form onSubmit={onSearchSubmit}>
+                    <form onSubmit={onSearchSubmit} aria-label="form">
                         <input
                             type="text"
                             placeholder="Search a hero"
@@ -64,6 +61,7 @@ export const SearchPage = () => {
 
                     {/*This can also be done in an internal component*/}
                     <div
+                        aria-label="search-hero-alert"
                         className="alert alert-primary animate__animated animate__fadeIn"
                         style={{display: showSearch ? '' : 'none'}}
                     >
@@ -71,6 +69,7 @@ export const SearchPage = () => {
                     </div>
 
                     <div
+                        aria-label="search-hero-danger"
                         className="alert alert-danger animate__animated animate__fadeIn"
                         style={{display: showError ? '' : 'none'}}
                     >
